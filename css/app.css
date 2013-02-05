@@ -21,23 +21,35 @@ input,select{vertical-align:middle}
 /* APP */
 
 body {
-  width: 700px;
+  min-width: 700px;
+  max-width: 900px;
   margin: 0 auto;
   font-family: "lucida grande", sans-serif;
   padding-top: 18px;
 }
 
+header h1 {
+  font-size: 30px;
+  height: 130px;
+  text-indent: 100%;
+  background: url(../images/logo.png) no-repeat center;
+  overflow: hidden;
+}
+
 .album-list {
   display: -webkit-flex;
   -webkit-flex-flow: row wrap;
+  -webkit-justify-content: center;
 }
 
 .album-list .album {
   margin: 10px;
+  -webkit-flex-grow: 1;
 }
 
 .album-list .album img {
   border: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .album-list .album p {

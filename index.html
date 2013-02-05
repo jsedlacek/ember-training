@@ -13,6 +13,13 @@
     <script src="js/app.js"></script>
   </head>
   <body>
+    <script type="text/x-handlebars">
+      <header>
+        <h1>BümBöx</h1>
+      </header>
+      {{outlet}}
+    </script>
+
     <script type="text/x-handlebars" data-template-name="index">
       <div class="album-list">
         <div class="album">
@@ -25,12 +32,6 @@
         </div>
         <div class="album">
           <img src="http://cdn3.rd.io/album/d/2/8/00000000001f382d/4/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
           <p class="album-name">The Morning After</p>
           <p class="artist-name">GOLDHOUSE</p>
           <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>

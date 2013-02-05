@@ -22,102 +22,31 @@
 
     <script type="text/x-handlebars" data-template-name="index">
       <div class="album-list">
-        <div class="album">
-          {{#linkTo "album"}}
-            <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          {{/linkTo}}
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/2/8/00000000001f382d/4/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">The Morning After</p>
-          <p class="artist-name">GOLDHOUSE</p>
-          <p class="song-count">8 songs<span class='explicit'>EXPLICIT</span></p>
-        </div>
+        {{#each album in controller}}
+          <div class="album">
+            {{#linkTo "album" album}}
+              <img {{bindAttr src="album.artwork"}}>
+            {{/linkTo}}
+            <p class="album-name">{{album.name}}</p>
+            <p class="artist-name">{{album.artist}}</p>
+            <p class="song-count">8 songs{{#if album.isExplicit}}<span class='explicit'>EXPLICIT</span>{{/if}}</p>
+          </div>
+        {{/each}}
       </div>
     </script>
 
     <script type="text/x-handlebars" data-template-name="album">
       <div class="album-info">
-        <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-        <h1>The Morning After</h1>
-        <h2>GOLDHOUSE</h2>
+        <img {{bindAttr src="artwork"}}>
+        <h1>{{name}}</h1>
+        <h2>{{artist}}</h2>
       </div>
       <table class="album-listing">
-        <tr>
-          <td>1</td><td>Runaway</td><td>4:29</td>
-        </tr>
-        <tr>
-          <td>2</td><td>Nothing to Lose</td><td>4:05</td>
-        </tr>
-        <tr>
-          <td>3</td><td>Everything</td><td>3:42</td>
-        </tr>
-        <tr>
-          <td>4</td><td>All I Really Need</td><td>4:06</td>
-        </tr>
+        {{#each song in songs}}
+          <tr>
+            <td>{{song.track}}</td><td>{{song.name}}</td><td>{{minutes song.duration}}</td>
+          </tr>
+        {{/each}}
       </table>
     </script>
   </body>

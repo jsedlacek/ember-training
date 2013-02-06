@@ -17,6 +17,7 @@ App.IndexRoute = Ember.Route.extend({
 Ember.Handlebars.registerBoundHelper('minutes', function(seconds) {
   var formattedMinutes = Math.floor(seconds / 60);
   var formattedSeconds = (seconds - (formattedMinutes * 60));
+  formattedSeconds = formattedSeconds < 10 ? "0" + formattedSeconds : formattedSeconds;
   return formattedMinutes + ":" + formattedSeconds;
 });
 
@@ -96,3 +97,28 @@ App.Song.FIXTURES = [{
   duration: 499,
   album: 1
 }];
+
+App.AudioView = Ember.View.extend({
+  templateName: 'audio-control',
+
+  didInsertElement: function() {
+    var view = this;
+
+    this.$('audio').on('timeupdate', function(e) {
+      view.set('duration', this.duration);
+      view.set('currentTime', Math.floor(this.currentTime));
+    });
+
+    this.$('input').on('change', function() {
+      view.$('audio').prop('currentTime', this.value);
+    });
+  },
+
+  playSong: function() {
+    this.$('audio')[0].play();
+  },
+
+  pauseSong: function() {
+    this.$('audio')[0].pause();
+  }
+});

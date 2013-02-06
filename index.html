@@ -15,7 +15,9 @@
   <body>
     <script type="text/x-handlebars">
       <header>
-        <h1>BümBöx</h1>
+        {{#linkTo "index"}}
+          <h1>BümBöx</h1>
+        {{/linkTo}}
       </header>
       {{outlet}}
       {{view App.AudioView src="http://robtowns.com/music/blind_willie.mp3"}}
@@ -53,10 +55,18 @@
 
     <script type="text/x-handlebars" data-template-name="audio-control">
       <audio {{bindAttr src="view.src"}}></audio>
-      <p>{{minutes view.currentTime}}</p>
-      <input type="range" min="0" {{bindAttr max="view.duration" value="view.currentTime"}}>
-      <button {{action "playSong" target=view}}>Play</button>
-      <button {{action "pauseSong" target=view}}>Pause</button>
+      {{#if view.isPlaying}}
+        <button {{action "pauseSong" target=view}}>Pause</button>
+        {{else}}
+        <button {{action "playSong" target=view}}>Play</button>
+      {{/if}}
+
+      {{#if view.isLoaded}}
+        <p>{{minutes view.currentTime}}</p>
+        <input type="range" min="0" {{bindAttr max="view.duration" value="view.currentTime"}}>
+      {{else}}
+        <p>Loading...</p>
+      {{/if}}
     </script>
   </body>
 </html>

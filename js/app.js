@@ -100,25 +100,32 @@ App.Song.FIXTURES = [{
 
 App.AudioView = Ember.View.extend({
   templateName: 'audio-control',
+  currentTime: 0,
 
   didInsertElement: function() {
     var view = this;
 
-    this.$('audio').on('timeupdate', function(e) {
+    this.$('audio').on('loadeddata', function(e) {
       view.set('duration', this.duration);
-      view.set('currentTime', Math.floor(this.currentTime));
+      view.set('isLoaded', true);
     });
 
-    this.$('input').on('change', function() {
-      view.$('audio').prop('currentTime', this.value);
+    this.$('audio').on('timeupdate', function(e) {
+      view.set('currentTime', Math.floor(this.currentTime));
     });
   },
 
+  change: function() {
+    this.$('audio').prop('currentTime', this.$('input').val());
+  },
+
   playSong: function() {
+    this.set('isPlaying', true);
     this.$('audio')[0].play();
   },
 
   pauseSong: function() {
+    this.set('isPlaying', false);
     this.$('audio')[0].pause();
   }
 });

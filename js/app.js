@@ -106,12 +106,16 @@ App.AudioView = Ember.View.extend({
     var view = this;
 
     this.$('audio').on('loadeddata', function(e) {
-      view.set('duration', this.duration);
-      view.set('isLoaded', true);
+      Ember.run(this, function() {
+        view.set('duration', this.duration);
+        view.set('isLoaded', true);
+      });
     });
 
     this.$('audio').on('timeupdate', function(e) {
-      view.set('currentTime', Math.floor(this.currentTime));
+      Ember.run(this, function() {
+        view.set('currentTime', Math.floor(this.currentTime));
+      });
     });
   },
 

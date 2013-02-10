@@ -11,6 +11,31 @@
     <script src="js/libs/ember.js"></script>
     <script src="js/libs/ember-data.js"></script>
     <script src="js/app.js"></script>
+
+    <script>
+      function loadScript(name) {
+        // Replace < symbol with its hex code in order to not make the HTML parser
+        // think we've ended the script.
+        // http://stackoverflow.com/questions/8231048/why-use-x3c-instead-of-when-generating-html-from-javascript
+        document.write('<script src="' + name + '">\x3C/script>');
+      }
+
+      function loadCSS(name) {
+        document.write('<link href="' + name + '" rel="stylesheet">');
+      }
+
+      if (~location.search.indexOf('tests=true')) {
+        loadScript('tests/helpers.js');
+        loadScript('tests/vendor/qunit.js');
+        loadScript('tests/step1.js');
+        loadScript('tests/step2.js');
+        loadScript('tests/step3.js');
+        loadScript('tests/step4.js');
+        loadScript('tests/step5.js');
+
+        loadCSS('tests/vendor/qunit.css');
+      }
+    </script>
   </head>
   <body>
     <script type="text/x-handlebars">
@@ -20,19 +45,19 @@
         {{/linkTo}}
       </header>
       {{outlet}}
-      {{view App.AudioView src="http://robtowns.com/music/blind_willie.mp3"}}
+      {{view App.AudioView src="audio/Lame_Drivers_-_01_-_Frozen_Egg.mp3"}}
     </script>
 
     <script type="text/x-handlebars" data-template-name="index">
       <div class="album-list">
-        {{#each album in controller}}
+        {{#each controller}}
           <div class="album">
-            {{#linkTo "album" album}}
-              <img {{bindAttr src="album.artwork"}}>
+            {{#linkTo "album" this}}
+              <img {{bindAttr src="artwork"}}>
             {{/linkTo}}
-            <p class="album-name">{{album.name}}</p>
-            <p class="artist-name">{{album.artist}}</p>
-            <p class="song-count">8 songs{{#if album.isExplicit}}<span class='explicit'>EXPLICIT</span>{{/if}}</p>
+            <p class="album-name">{{name}}</p>
+            <p class="artist-name">{{artist}}</p>
+            <p class="song-count">8 songs{{#if isExplicit}}<span class='explicit'>EXPLICIT</span>{{/if}}</p>
           </div>
         {{/each}}
       </div>
@@ -47,7 +72,9 @@
       <table class="album-listing">
         {{#each song in songs}}
           <tr>
-            <td>{{song.track}}</td><td>{{song.name}}</td><td>{{minutes song.duration}}</td>
+            <td class="song-track">{{song.track}}</td>
+            <td class="song-name">{{song.name}}</td>
+            <td class="song-duration">{{minutes song.duration}}</td>
           </tr>
         {{/each}}
       </table>
@@ -68,5 +95,7 @@
         <p>Loading...</p>
       {{/if}}
     </script>
+    <div id="qunit" style="display: none"></div>
+    <div id="qunit-fixture" style="display: none"></div>
   </body>
 </html>

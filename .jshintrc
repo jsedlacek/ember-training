@@ -13,6 +13,7 @@
         "require",
         "requireModule",
         "invokeHelper",
+        "createController",
         "equal",
         "notEqual",
         "notStrictEqual",

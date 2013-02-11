@@ -107,3 +107,8 @@ function invokeHelper(helperName, parameter) {
 
   return helper(parameter);
 }
+
+function createController(controllerName) {
+  var container = App.buildContainer(App);
+  return container.lookup('controller:' + controllerName);
+}

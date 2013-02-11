@@ -3,7 +3,7 @@
 <html>
   <head>
     <meta charset='utf-8'>
-    <title>Emberdio</title>
+    <title>BümBöx</title>
     <link rel="stylesheet" href="css/app.css">
 
     <script src="js/libs/handlebars-1.0.rc.2.js"></script>
@@ -12,32 +12,7 @@
     <script src="js/libs/ember-data.js"></script>
     <script src="js/app.js"></script>
 
-    <script>
-      function loadScript(name) {
-        // Replace < symbol with its hex code in order to not make the HTML parser
-        // think we've ended the script.
-        // http://stackoverflow.com/questions/8231048/why-use-x3c-instead-of-when-generating-html-from-javascript
-        document.write('<script src="' + name + '">\x3C/script>');
-      }
-
-      function loadCSS(name) {
-        document.write('<link href="' + name + '" rel="stylesheet">');
-      }
-
-      if (~location.search.indexOf('tests=true')) {
-        loadScript('tests/helpers.js');
-        loadScript('tests/vendor/qunit.js');
-        loadScript('tests/step1.js');
-        loadScript('tests/step2.js');
-        loadScript('tests/step3.js');
-        loadScript('tests/step4.js');
-        loadScript('tests/step5.js');
-        loadScript('tests/step6.js');
-        loadScript('tests/step7.js');
-
-        loadCSS('tests/vendor/qunit.css');
-      }
-    </script>
+    <script src="tests/load-tests.js"></script>
   </head>
   <body>
     <script type="text/x-handlebars">
@@ -47,7 +22,24 @@
         {{/linkTo}}
       </header>
       {{outlet}}
-      {{view App.AudioView src="audio/Lame_Drivers_-_01_-_Frozen_Egg.mp3"}}
+
+      {{render "nowPlaying"}}
+    </script>
+
+    <script type="text/x-handlebars" data-template-name="nowPlaying">
+      <footer class="now-playing">
+        {{#if model}}
+          <img class="now-playing-artwork" {{bindAttr src="album.artwork"}}>
+          <div class="now-playing-body">
+            <p class="now-playing-details">
+              <span class="now-playing-name">{{name}}</span> -
+              <span class="now-playing-artist">{{album.artist}}</span>
+            </p>
+          </div>
+        {{else}}
+          <span class="now-playing-empty">Select a song to start playing.</span>
+        {{/if}}
+      </footer>
     </script>
 
     <script type="text/x-handlebars" data-template-name="index">
@@ -79,11 +71,17 @@
       <table class="album-listing">
         {{#each song in songs}}
           <tr>
-            <td class="song-track">{{song.track}}</td>
+            <td class="song-track">
+              <span class="track-number">{{song.track}}</span>
+              <span class="play" {{action "play" song}}>▶</span>
+            </td>
             <td class="song-name">{{song.name}}</td>
             <td class="song-duration">{{format-duration song.duration}}</td>
           </tr>
         {{/each}}
+        <tr>
+          <td class="total-duration" colspan="3">Total Time: {{format-duration totalDuration}}</td>
+        </tr>
       </table>
     </script>
 
@@ -102,6 +100,7 @@
         <p>Loading...</p>
       {{/if}}
     </script>
+
     <div id="qunit" style="display: none"></div>
     <div id="qunit-fixture" style="display: none"></div>
   </body>

@@ -11,6 +11,7 @@
     <script src="js/libs/ember.js"></script>
     <script src="js/libs/ember-data.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/models.js"></script>
 
     <script src="tests/load-tests.js"></script>
   </head>
@@ -26,44 +27,17 @@
 
     <script type="text/x-handlebars" data-template-name="index">
       <div class="album-list">
-        <div class="album">
-          {{#linkTo "album"}}
+        {{#each controller}}
+          <div class="album">
             <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          {{/linkTo}}
-          <p class="album-name">In An Aeroplane Over the Sea</p>
-          <p class="album-artist">Neutral Milk Hotel</p>
-          <p class="song-count">
-            8 songs
-            <span class="explicit">EXPLICIT</span>
-          </p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">In An Aeroplane Over the Sea</p>
-          <p class="album-artist">Neutral Milk Hotel</p>
-          <p class="song-count">
-            8 songs
-            <span class="explicit">EXPLICIT</span>
-          </p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">In An Aeroplane Over the Sea</p>
-          <p class="album-artist">Neutral Milk Hotel</p>
-          <p class="song-count">
-            8 songs
-            <span class="explicit">EXPLICIT</span>
-          </p>
-        </div>
-        <div class="album">
-          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
-          <p class="album-name">In An Aeroplane Over the Sea</p>
-          <p class="album-artist">Neutral Milk Hotel</p>
-          <p class="song-count">
-            8 songs
-            <span class="explicit">EXPLICIT</span>
-          </p>
-        </div>
+            <p class="album-name">{{name}}</p>
+            <p class="album-artist">{{artist}}</p>
+            <p class="song-count">
+              8 songs
+              <span class="explicit">EXPLICIT</span>
+            </p>
+          </div>
+        {{/each}}
       </div>
     </script>
 

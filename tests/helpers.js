@@ -1,4 +1,4 @@
-// Don't look at the man behind the curtain
+QUnit.config.testTimeout = 200;
 
 /*global $ App*/
 Ember.onLoad('application', function(application) {

@@ -12,8 +12,8 @@ function loadCSS(name) {
 }
 
 function loadTests(number) {
-  loadScript('tests/helpers.js');
   loadScript('tests/vendor/qunit.js');
+  loadScript('tests/helpers.js');
 
   for (var i=1; i<=number; i++) {
     loadScript('tests/step' + i + '.js');

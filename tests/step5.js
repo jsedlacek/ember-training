@@ -1,4 +1,12 @@
-(function() {
+/*
+  In Step 5, you'll create a link from the album list to an individual
+  album.
+
+  Go to the index template and wrap the image with the album artwork
+  inside a {{#linkTo}} helper. Make sure to pass a parameter to the
+  helper; this tells it which model's ID should go into the dynamic
+  segment you created in Step 4.
+*/
 
 step(5, "Add a Link");
 
@@ -13,6 +21,3 @@ test("Clicking on an album shows the album template", function() {
 
   shouldHaveElement('.album-info');
 });
-
-})();
-

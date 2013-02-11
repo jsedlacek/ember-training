@@ -150,8 +150,8 @@ Ember.deprecateFunc = function(message, func) {
 
 })();
 
-// Version: v1.0.0-pre.4-192-g2ea5b89
-// Last commit: 2ea5b89 (2013-02-09 16:47:56 -0800)
+// Version: v1.0.0-pre.4-197-g3df5ddf
+// Last commit: 3df5ddf (2013-02-10 13:39:21 -0800)
 
 
 (function() {
@@ -2232,7 +2232,6 @@ Ember.defineProperty = function(obj, keyName, desc, data, meta) {
     } else {
       obj[keyName] = undefined; // make enumerable
     }
-    desc.setup(obj, keyName);
   } else {
     descs[keyName] = undefined; // shadow descriptor in proto
     if (desc == null) {
@@ -2951,15 +2950,12 @@ Ember.watch = function(obj, keyName) {
   // can't watch length on Array - it is special...
   if (keyName === 'length' && Ember.typeOf(obj) === 'array') { return this; }
 
-  var m = metaFor(obj), watching = m.watching, desc;
+  var m = metaFor(obj), watching = m.watching;
 
   // activate watching first time
   if (!watching[keyName]) {
     watching[keyName] = 1;
     if (isKeyName(keyName)) {
-      desc = m.descs[keyName];
-      if (desc && desc.willWatch) { desc.willWatch(obj, keyName); }
-
       if ('function' === typeof obj.willWatchProperty) {
         obj.willWatchProperty(keyName);
       }
@@ -2994,15 +2990,12 @@ Ember.unwatch = function(obj, keyName) {
   // can't watch length on Array - it is special...
   if (keyName === 'length' && Ember.typeOf(obj) === 'array') { return this; }
 
-  var m = metaFor(obj), watching = m.watching, desc;
+  var m = metaFor(obj), watching = m.watching;
 
   if (watching[keyName] === 1) {
     watching[keyName] = 0;
 
     if (isKeyName(keyName)) {
-      desc = m.descs[keyName];
-      if (desc && desc.didUnwatch) { desc.didUnwatch(obj, keyName); }
-
       if ('function' === typeof obj.didUnwatchProperty) {
         obj.didUnwatchProperty(keyName);
       }
@@ -3412,25 +3405,6 @@ ComputedPropertyPrototype.meta = function(meta) {
 };
 
 /* impl descriptor API */
-ComputedPropertyPrototype.willWatch = function(obj, keyName) {
-  // watch already creates meta for this instance
-  var meta = obj[META_KEY];
-  Ember.assert('watch should have setup meta to be writable', meta.source === obj);
-  if (!(keyName in meta.cache)) {
-    addDependentKeys(this, obj, keyName, meta);
-  }
-};
-
-ComputedPropertyPrototype.didUnwatch = function(obj, keyName) {
-  var meta = obj[META_KEY];
-  Ember.assert('unwatch should have setup meta to be writable', meta.source === obj);
-  if (!(keyName in meta.cache)) {
-    // unwatch already creates meta for this instance
-    removeDependentKeys(this, obj, keyName, meta);
-  }
-};
-
-/* impl descriptor API */
 ComputedPropertyPrototype.didChange = function(obj, keyName) {
   // _suspended is set via a CP.set to ensure we don't clear
   // the cached value set by the setter
@@ -3438,9 +3412,7 @@ ComputedPropertyPrototype.didChange = function(obj, keyName) {
     var meta = metaFor(obj);
     if (keyName in meta.cache) {
       delete meta.cache[keyName];
-      if (!meta.watching[keyName]) {
-        removeDependentKeys(this, obj, keyName, meta);
-      }
+      removeDependentKeys(this, obj, keyName, meta);
     }
   }
 };
@@ -3453,9 +3425,7 @@ ComputedPropertyPrototype.get = function(obj, keyName) {
     cache = meta.cache;
     if (keyName in cache) { return cache[keyName]; }
     ret = cache[keyName] = this.func.call(obj, keyName);
-    if (!meta.watching[keyName]) {
-      addDependentKeys(this, obj, keyName, meta);
-    }
+    addDependentKeys(this, obj, keyName, meta);
   } else {
     ret = this.func.call(obj, keyName);
   }
@@ -3508,7 +3478,7 @@ ComputedPropertyPrototype.set = function(obj, keyName, value) {
     }
 
     if (cacheable) {
-      if (!watched && !hadCachedValue) {
+      if (!hadCachedValue) {
         addDependentKeys(this, obj, keyName, meta);
       }
       cache[keyName] = ret;
@@ -3521,19 +3491,11 @@ ComputedPropertyPrototype.set = function(obj, keyName, value) {
   return ret;
 };
 
-/* called when property is defined */
-ComputedPropertyPrototype.setup = function(obj, keyName) {
-  var meta = obj[META_KEY];
-  if (meta && meta.watching[keyName]) {
-    addDependentKeys(this, obj, keyName, metaFor(obj));
-  }
-};
-
 /* called before property is overridden */
 ComputedPropertyPrototype.teardown = function(obj, keyName) {
   var meta = metaFor(obj);
 
-  if (meta.watching[keyName] || keyName in meta.cache) {
+  if (keyName in meta.cache) {
     removeDependentKeys(this, obj, keyName, meta);
   }
 
@@ -17836,7 +17798,7 @@ Ember.Handlebars.registerHelper('helperMissing', function(path, options) {
 Ember.Handlebars.registerBoundHelper = function(name, fn) {
   var dependentKeys = slice.call(arguments, 2);
 
-  Ember.Handlebars.registerHelper(name, function() {
+  function helper() {
     var properties = slice.call(arguments, 0, -1),
       numProperties = properties.length,
       options = arguments[arguments.length - 1],
@@ -17898,7 +17860,10 @@ Ember.Handlebars.registerBoundHelper = function(name, fn) {
     for (var i=0, l=dependentKeys.length; i<l; i++) {
       view.registerObserver(pathRoot, path + '.' + dependentKeys[i], bindView, rerenderBoundHelperView);
     }
-  });
+  }
+
+  helper._rawFunction = fn;
+  Ember.Handlebars.registerHelper(name, helper);
 };
 
 /**
@@ -26698,8 +26663,8 @@ Ember States
 
 
 })();
-// Version: v1.0.0-pre.4-192-g2ea5b89
-// Last commit: 2ea5b89 (2013-02-09 16:47:56 -0800)
+// Version: v1.0.0-pre.4-197-g3df5ddf
+// Last commit: 3df5ddf (2013-02-10 13:39:21 -0800)
 
 
 (function() {

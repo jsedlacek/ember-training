@@ -1,18 +1,11 @@
 (function() {
 
-step(4, "Add a Link");
+step(4, "Add Resource");
 
-test("Each album on the index page should have a link to the album page", function() {
-  [ 1, 2, 3, 4 ].forEach(function(id) {
-    shouldHaveElement('.album a', { href: '#/album/' + id });
+test("When navigating to /album/1, the album with ID of 1 is displayed", function() {
+  navigateTo('/album/1', function() {
+    shouldHaveElement('.album-info');
   });
 });
 
-test("Clicking on an album shows the album template", function() {
-  click('.album:first a');
-
-  shouldHaveElement('.album-info');
-});
-
 })();
-

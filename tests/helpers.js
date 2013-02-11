@@ -101,3 +101,9 @@ function navigateTo(url, callback) {
 
   location.hash = url;
 }
+
+function invokeHelper(helperName, parameter) {
+  var helper = Ember.Handlebars.helpers[helperName]._rawFunction;
+
+  return helper(parameter);
+}

@@ -32,6 +32,8 @@
         loadScript('tests/step3.js');
         loadScript('tests/step4.js');
         loadScript('tests/step5.js');
+        loadScript('tests/step6.js');
+        loadScript('tests/step7.js');
 
         loadCSS('tests/vendor/qunit.css');
       }
@@ -57,7 +59,12 @@
             {{/linkTo}}
             <p class="album-name">{{name}}</p>
             <p class="artist-name">{{artist}}</p>
-            <p class="song-count">8 songs{{#if isExplicit}}<span class='explicit'>EXPLICIT</span>{{/if}}</p>
+            <p class="song-count">
+              8 songs
+              {{#if isExplicit}}
+                <span class='explicit'>EXPLICIT</span>
+              {{/if}}
+            </p>
           </div>
         {{/each}}
       </div>
@@ -74,7 +81,7 @@
           <tr>
             <td class="song-track">{{song.track}}</td>
             <td class="song-name">{{song.name}}</td>
-            <td class="song-duration">{{minutes song.duration}}</td>
+            <td class="song-duration">{{format-duration song.duration}}</td>
           </tr>
         {{/each}}
       </table>
@@ -89,7 +96,7 @@
       {{/if}}
 
       {{#if view.isLoaded}}
-        <p>{{minutes view.currentTime}}</p>
+        <p>{{format-duration view.currentTime}}</p>
         <input type="range" min="0" {{bindAttr max="view.duration" value="view.currentTime"}}>
       {{else}}
         <p>Loading...</p>

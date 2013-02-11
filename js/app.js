@@ -14,9 +14,9 @@ App.IndexRoute = Ember.Route.extend({
   }
 });
 
-Ember.Handlebars.registerBoundHelper('minutes', function(seconds) {
+Ember.Handlebars.registerBoundHelper('format-duration', function(seconds) {
   var formattedMinutes = Math.floor(seconds / 60);
-  var formattedSeconds = (seconds - (formattedMinutes * 60));
+  var formattedSeconds = seconds % 60;
   formattedSeconds = formattedSeconds < 10 ? "0" + formattedSeconds : formattedSeconds;
   return formattedMinutes + ":" + formattedSeconds;
 });

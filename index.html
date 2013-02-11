@@ -15,6 +15,113 @@
     <script src="tests/load-tests.js"></script>
   </head>
   <body>
+    <script type="text/x-handlebars">
+        <header>
+            {{#linkTo "index"}}
+                <h1>BumBox</h1>
+            {{/linkTo}}
+        </header>
+        {{outlet}}
+    </script>
+
+    <script data-template-name="index" type="text/x-handlebars">
+        <div class="album-list">
+          <div class="album">
+            {{#linkTo "album"}}
+                <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
+            {{/linkTo}}
+            <p class="album-name">In An Aeroplane Over the Sea</p>
+            <p class="album-artist">Neutral Milk Hotel</p>
+            <p class="song-count">
+              8 songs
+              <span class="explicit">EXPLICIT</span>
+            </p>
+          </div>
+          <div class="album">
+            <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
+            <p class="album-name">In An Aeroplane Over the Sea</p>
+            <p class="album-artist">Neutral Milk Hotel</p>
+            <p class="song-count">
+              8 songs
+              <span class="explicit">EXPLICIT</span>
+            </p>
+          </div>
+          <div class="album">
+            <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
+            <p class="album-name">In An Aeroplane Over the Sea</p>
+            <p class="album-artist">Neutral Milk Hotel</p>
+            <p class="song-count">
+              8 songs
+              <span class="explicit">EXPLICIT</span>
+            </p>
+          </div>
+          <div class="album">
+            <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
+            <p class="album-name">In An Aeroplane Over the Sea</p>
+            <p class="album-artist">Neutral Milk Hotel</p>
+            <p class="song-count">
+              8 songs
+              <span class="explicit">EXPLICIT</span>
+            </p>
+          </div>
+        </div>
+    </script>
+
+    <script data-template-name="album" type="text/x-handlebars">
+        <div class="album-info">
+          <img src="http://cdn3.rd.io/album/d/b/c/0000000000220cbd/1/square-200.jpg">
+          <h1>In an Aeroplane Over the Sea</h1>
+          <h2>Neutral Milk Hotel</h2>
+        </div>
+        <table class="album-listing">
+          <tr>
+            <td class="song-track">
+              <span class="track-number">1</span>
+            </td>
+            <td class="song-name">The Communist Daughter</td>
+            <td class="song-duration">5:32</td>
+          </tr>
+          <tr>
+            <td class="song-track">
+              <span class="track-number">1</span>
+            </td>
+            <td class="song-name">The Communist Daughter</td>
+            <td class="song-duration">5:32</td>
+          </tr>
+          <tr>
+            <td class="song-track">
+              <span class="track-number">1</span>
+            </td>
+            <td class="song-name">The Communist Daughter</td>
+            <td class="song-duration">5:32</td>
+          </tr>
+          <tr>
+            <td class="song-track">
+              <span class="track-number">1</span>
+            </td>
+            <td class="song-name">The Communist Daughter</td>
+            <td class="song-duration">5:32</td>
+          </tr>
+          <tr>
+            <td class="song-track">
+              <span class="track-number">1</span>
+            </td>
+            <td class="song-name">The Communist Daughter</td>
+            <td class="song-duration">5:32</td>
+          </tr>
+          <tr>
+            <td class="song-track">
+              <span class="track-number">1</span>
+            </td>
+            <td class="song-name">The Communist Daughter</td>
+            <td class="song-duration">5:32</td>
+          </tr>
+          <tr>
+            <td class="total-duration" colspan="3">Total Time: 40:03</td>
+          </tr>
+        </table>
+    </script>
+
     <div id="qunit" style="display: none"></div>
     <div id="qunit-fixture" style="display: none"></div>
   </body>

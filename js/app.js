@@ -9,7 +9,7 @@ App.Store = DS.Store.extend({
 });
 
 App.Router.map(function() {
-  this.route('album');
+  this.resource('album', { path: '/album/:album_id' });
 });
 
 App.IndexRoute = Ember.Route.extend({

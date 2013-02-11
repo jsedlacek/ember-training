@@ -35,6 +35,9 @@
               <span class="now-playing-name">{{name}}</span> -
               <span class="now-playing-artist">{{album.artist}}</span>
             </p>
+            <div class="now-playing-player">
+              {{view App.AudioView srcBinding=url}}
+            </div>
           </div>
         {{else}}
           <span class="now-playing-empty">Select a song to start playing.</span>
@@ -86,18 +89,18 @@
     </script>
 
     <script type="text/x-handlebars" data-template-name="audio-control">
-      <audio {{bindAttr src="view.src"}}></audio>
+      <audio {{bindAttr src="view.src"}} autoplay></audio>
       {{#if view.isPlaying}}
-        <button {{action "pauseSong" target=view}}>Pause</button>
+        <button class='pause' {{action "pauseSong" target=view}}>❙❙</button>
         {{else}}
-        <button {{action "playSong" target=view}}>Play</button>
+        <button class='play' {{action "playSong" target=view}}>▶</button>
       {{/if}}
 
       {{#if view.isLoaded}}
-        <p>{{format-duration view.currentTime}}</p>
         <input type="range" min="0" {{bindAttr max="view.duration" value="view.currentTime"}}>
+        <p class='duration'>{{format-duration view.currentTime}}</p>
       {{else}}
-        <p>Loading...</p>
+        <p class='loading'>Loading...</p>
       {{/if}}
     </script>
 

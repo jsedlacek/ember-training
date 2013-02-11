@@ -15,7 +15,7 @@ function loadTests(number) {
   loadScript('tests/helpers.js');
   loadScript('tests/vendor/qunit.js');
 
-  for (var i=0; i<=number; i++) {
+  for (var i=1; i<=number; i++) {
     loadScript('tests/step' + i + '.js');
   }
 
@@ -31,5 +31,22 @@ if (~location.search.indexOf('tests=')) {
 
   loadTests(match[1]);
 }
+
+var on = Ember.$.fn.on;
+
+Ember.$.fn.on = function() {
+  var callback = [].slice.call(arguments, -1)[0],
+      args = [].slice.call(arguments, 0, -1);
+
+  if (typeof callback === 'function') {
+    var wrappedCallback = function() {
+      return Ember.run(this, callback);
+    };
+    args.push(wrappedCallback);
+    return on.apply(this, args);
+  } else {
+    return on.apply(this, arguments);
+  }
+};
 
 })();

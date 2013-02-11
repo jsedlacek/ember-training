@@ -30,6 +30,7 @@ body {
   margin: 0 auto;
   font-family: "lucida grande", sans-serif;
   padding-top: 18px;
+  padding-bottom: 100px;
 }
 
 header h1 {
@@ -179,8 +180,44 @@ footer.now-playing .now-playing-artwork {
 footer.now-playing .now-playing-body {
   display: -webkit-flex;
   -webkit-flex-direction: column;
+  -webkit-justify-content: space-between;
+  width: 100%;
 }
 
 footer.now-playing .now-playing-empty {
   -webkit-align-self: center;
+}
+
+p.now-playing-player {
+  margin-top: 10px;
+}
+
+div.audio-control {
+  display: -webkit-flex;
+  -webkit-flex-direction: row;
+  -webkit-align-items: center;
+  height: 25px;
+}
+
+div.audio-control button {
+  border: none;
+  background-color: transparent;
+  font-size: 24px;
+  width: 30px;
+  padding: 0;
+  margin: 0;
+  color: #666;
+}
+
+div.audio-control p.duration {
+  font-size: 11px;
+  width: 60px;
+  color: #999;
+  margin-left: 10px;
+}
+
+div.audio-control input[type=range] {
+  -webkit-flex-grow: 1;
+  position: relative;
+  top: 1px;
 }

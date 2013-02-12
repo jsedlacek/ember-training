@@ -1,4 +1,4 @@
-QUnit.config.testTimeout = 200;
+QUnit.config.testTimeout = 4000;
 
 /*global $ App*/
 Ember.onLoad('application', function(application) {
@@ -21,6 +21,8 @@ $(function() {
   $('#qunit, #qunit-fixture').show();
 });
 
+Ember._viewsInTest = [];
+
 function step(number, description) {
   module("Step " + number + ": " + description, {
     setup: function() {
@@ -31,6 +33,11 @@ function step(number, description) {
     },
 
     teardown: function() {
+      Ember._viewsInTest.slice().forEach(function(view) {
+        Ember.run(view, 'destroy');
+      });
+
+      Ember._viewsInTest = [];
     }
   });
 }
@@ -40,13 +47,17 @@ function urlEquals(expected) {
   QUnit.push(actual === expected, actual, expected, "The URL should be " + expected + ", but was " + actual);
 }
 
-function click(selector) {
+function click(selector, view) {
   Ember.run(function() {
-    Ember.$(selector).click();
+    if (view) {
+      view.$(selector).click();
+    } else {
+      Ember.$(selector).click();
+    }
   });
 }
 
-function shouldHaveElement(selector, content, message) {
+function _shouldHaveElement(selector, content, message, root) {
   var generatedMessage;
   if (typeof content === 'string') {
     generatedMessage = selector + " containing '" + content + "'";
@@ -66,21 +77,41 @@ function shouldHaveElement(selector, content, message) {
 
   generatedMessage = "Should have element " + generatedMessage;
 
-  var element = Ember.$(selector);
+  var element;
+  if (root) {
+    element = Ember.$(selector, root);
+  } else {
+    element = Ember.$(selector);
+  }
 
-  QUnit.push(element.length === 1, null, null, message || generatedMessage);
+  return [element, message || generatedMessage];
+}
 
-  // I cried the tears of my liiiiife
-  var assertions = QUnit.config.current.assertions,
-      lastAssertion = assertions[assertions.length - 1];
+function shouldHaveElement(selector, content, message) {
+  var ret = _shouldHaveElement(selector, content, message);
 
-  lastAssertion.message = lastAssertion.message.replace(/<tr class='test-expected'>.*?<\/tr>/, '');
+  QUnit.push(ret[0].length === 1, null, null, ret[1]);
+  removeExpectedFromResult();
+}
+
+function viewShouldHaveElement(view, selector, content, message) {
+  var element = view.get('element');
+  var ret = _shouldHaveElement(selector, content, message, element);
+
+  QUnit.push(ret[0].length === 1, null, null, ret[1]);
+  removeExpectedFromResult();
 }
 
 function shouldHaveElements(selector, length, message) {
   var elements = Ember.$(selector);
 
   QUnit.push(elements.length === length, elements.length, length, message || "The page should have " + length + " '" + selector + "' elements");
+}
+
+function viewShouldHaveElements(view, selector, length, message) {
+  var elements = Ember.$(selector, view.get('element'));
+
+  QUnit.push(elements.length === length, elements.length, length, message || "The view " + view + " should have " + length + " '" + selector + "' elements");
 }
 
 function navigateTo(url, callback) {
@@ -103,9 +134,11 @@ function navigateTo(url, callback) {
 }
 
 function invokeHelper(helperName, parameter) {
-  var helper = Ember.Handlebars.helpers[helperName]._rawFunction;
+  var helper = Ember.Handlebars.helpers[helperName];
 
-  return helper(parameter);
+  Ember.assert("The " + helperName + " helper was not found", helper);
+
+  return helper._rawFunction(parameter);
 }
 
 function createController(controllerName) {
@@ -197,10 +230,6 @@ function waitFor(object, property, callback) {
     QUnit.push(false, null, null, "Timed out waiting for " + property + " of " + object + " to become truthy");
     removeExpectedFromResult();
   }, 3800);
-}
-
-function controllerFor(controller) {
-  return App.__container__.lookup('controller:' + controller);
 }
 
 function removeExpectedFromResult() {

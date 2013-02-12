@@ -25,6 +25,20 @@ App.AlbumRoute = Em.Route.extend({
 });
 
 
+App.AlbumController = Em.ObjectController.extend({
+    totalDuration: function() {
+        return (this.get('songs') || []).getEach('duration').reduce(function(s, t) {
+            return s += t;
+        }, 0);
+    }.property('songs.@each.duration')
+});
+
+Ember.Handlebars.registerBoundHelper('format-duration', function(value, options) {
+    var secs = ''+(value % 60);
+    return ''+Math.floor(value / 60)+':'+(secs.length === 1 ? '0' : '')+secs;
+});
+
+
 // -------------- models.js contents -------------
 var attr = DS.attr, belongsTo = DS.belongsTo, hasMany = DS.hasMany;
 

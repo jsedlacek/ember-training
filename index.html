@@ -26,6 +26,15 @@
         {{render "nowPlaying"}}
     </script>
 
+    <script data-template-name="audioControl" type="text/x-handlebars">
+        <audio autoplay {{bindAttr src="view.src"}}></audio>
+        {{#unless view.isPlaying}}
+            <button class="play" {{action "play" target="view"}}>▶</button>
+        {{else}}
+            <button class="pause" {{action "pause" target="view"}}>[]</button>
+        {{/unless}}
+    </script>
+
     <script data-template-name="nowPlaying" type="text/x-handlebars">
         <footer class="now-playing">
         {{#if model}}
@@ -36,7 +45,7 @@
                 <span class="now-playing-artist">{{album.artist}}</span>
               </p>
               <div class="now-playing-player">
-                <!-- You will fill this in later -->
+                {{view App.AudioView srcBinding="url"}}
               </div>
             </div>
         {{else}}

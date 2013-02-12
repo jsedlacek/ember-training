@@ -36,6 +36,53 @@ App.AlbumRoute = Em.Route.extend({
 App.NowPlayingController = Em.ObjectController.extend({
 });
 
+App.AudioView = Em.View.extend({
+    templateName: 'audioControl',
+    classNames: ['audio-control'],
+
+    // mirroring the audio tag properties
+    currentTime: 0,
+    duration: 0,
+    isLoaded: false,
+    isPlaying: false,
+
+
+    play: function() {
+        this.$('audio')[0].play();
+        this.set('isPlaying', true);
+    },
+    pause: function() {
+        this.$('audio')[0].pause();
+        this.set('isPlaying', false);
+    },
+
+    didInsertElement: function() {
+        var view = this;
+        var $audio = this.$('audio');
+
+        $audio.on('durationchange', function(e) {
+            view.set('duration', Math.floor(this.duration));
+            console.log('duration', view.get('duration'));
+        });
+        $audio.on('loadedmetadata', function(e) {
+            view.set('isLoaded', true);
+            console.log('loaded', view.get('isLoaded'));
+        });
+        $audio.on('timeupdate', function(e) {
+            view.set('currentTime', Math.floor(this.currentTime));
+            console.log('currentTime', view.get('currentTime'));
+        });
+        $audio.on('play', function(e) {
+            view.set('isPlaying', true);
+            console.log('playing', view.get('isPlaying'));
+        });
+        $audio.on('pause', function(e) {
+            view.set('isPlaying', false);
+            console.log('playing', view.get('isPlaying'));
+        });
+    }
+});
+
 App.AlbumController = Em.ObjectController.extend({
     // can handle this on the controller... however this belongs to the route...
     Xneeds: ['nowPlaying'],

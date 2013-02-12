@@ -18,6 +18,12 @@ App.IndexRoute = Em.Route.extend({
     }
 });
 App.AlbumRoute = Em.Route.extend({
+    events: {
+        play: function(song) {
+            this.controllerFor('nowPlaying').set('model', song);
+        }
+    },
+
     model: function(params) {
         return App.Album.find(params.id);
     },
@@ -27,7 +33,16 @@ App.AlbumRoute = Em.Route.extend({
     }
 });
 
+App.NowPlayingController = Em.ObjectController.extend({
+});
+
 App.AlbumController = Em.ObjectController.extend({
+    // can handle this on the controller... however this belongs to the route...
+    Xneeds: ['nowPlaying'],
+    Xplay: function(song) {
+        this.get('controllers.nowPlaying').set('song', song);
+    },
+
     totalDuration: function() {
         return (this.get('songs') || []).getEach('duration').reduce(function(s, t) {
             return s += t;

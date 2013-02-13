@@ -67,6 +67,15 @@
               <div class="now-playing-player">
                 {{view App.AudioView srcBinding="url"}}
               </div>
+              {{#if queue.length}}
+                <div style="position:relative;">
+                    <table class="queue-overlay">
+                      {{#each queue}}
+                        {{partial songRow}}
+                      {{/each}}
+                    </table>
+                </div>
+              {{/if}}
             </div>
         {{else}}
           <span class="now-playing-empty">Select a song to start playing.</span>
@@ -94,6 +103,18 @@
         </div>
     </script>
 
+    <script data-template-name="_songRow" type="text/x-handlebars">
+          <tr {{bindAttr class="isSelected:selected"}}>
+            <td class="song-track">
+              <span class="track-number">{{track}}</span>
+              <span class="play" {{action "play" this}}>▶</span>
+              <span class="play" {{action "enqueue" this}}>Q</span>
+            </td>
+            <td class="song-name">{{name}}</td>
+            <td class="song-duration">{{format-duration duration}}</td>
+          </tr>
+    </script>
+
     <script data-template-name="album" type="text/x-handlebars">
         <div class="album-info">
           <img {{bindAttr src="artwork"}}">
@@ -102,15 +123,7 @@
         </div>
         <table class="album-listing">
           {{#each songs itemController="song"}}
-              <tr {{bindAttr class="isSelected:selected"}}>
-                <td class="song-track">
-                  <span class="track-number">{{track}}</span>
-                  <span class="play" {{action "play" this}}>▶</span>
-                  <span class="play" {{action "enqueue" this}}>Q</span>
-                </td>
-                <td class="song-name">{{name}}</td>
-                <td class="song-duration">{{format-duration duration}}</td>
-              </tr>
+            {{partial songRow}}
           {{/each}}
           <tr>
             <td class="total-duration" colspan="3">Total Time: {{format-duration totalDuration}}</td>

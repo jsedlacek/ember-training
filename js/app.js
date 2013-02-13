@@ -55,17 +55,26 @@ App.SongController = Em.ObjectController.extend({
     },
     enqueue: function(songController) {
         // need to peel the itemController by song.get('model')
-        this.get('controllers.nowPlaying.queue').pushObject(songController.get('model'));
+        this.get('controllers.nowPlaying').get('nextSongs').pushObject(songController.get('model'));
     }
 });
 
 App.NowPlayingController = Em.ObjectController.extend({
-    queue: null,
+    displayQueue: false,
+    nextSongs: null,
+
     init: function() {
-        this.set('queue', []);
+        this.set('nextSongs', []);
     },
+
+    // action called upon playing ended event as well as on 'next' button click
     next: function() {
-        this.set('model', this.get('queue').shiftObject());
+        this.set('model', this.get('nextSongs').shiftObject());
+    },
+
+    // action called upon playing ended event as well as on 'next' button click
+    showQueue: function() {
+        this.set('displayQueue', !this.get('displayQueue'));
     }
 });
 

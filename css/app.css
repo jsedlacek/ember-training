@@ -232,13 +232,6 @@ div.audio-control p.queue {
   margin-left: 120px;
 }
 
-table.queue-overlay {
-  position: fixed;
-  right: 50px;
-  left: 50px;
-  width: auto;
-}
-
 div.audio-control input[type=range] {
   -webkit-flex-grow: 1;
   position: relative;

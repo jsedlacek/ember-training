@@ -46,8 +46,8 @@ test("when clicking the show queue button the queue is displayed", function() {
   click('.album-listing tr:first .queue');
   click('footer button:contains(Show queue)');
 
-  shouldHaveElement('#queue', undefined, "The queue is showing");
-  shouldHaveElement('#queue .album-listing tr', "A Walk", "The queue is showing");
+  shouldHaveElement('#queue', undefined, "The queue div is there");
+  shouldHaveElement('#queue .album-listing tr', "A Walk", "The queue is showing songs");
 
   click('button:contains(Show queue)'); // Hide the queue
 });

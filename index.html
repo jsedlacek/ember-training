@@ -47,15 +47,19 @@
             <input type="range" {{bindAttr value="view.currentTime"}} {{bindAttr max="view.duration"}}></input>
         </p>
 
-        {{#if queue.length}}
-        <p class="queue">
-            {{queue.length}}
-            <button class="next" {{action "next"}}>&gt;</button>
-        </p>
-        {{/if}}
     </script>
 
     <script data-template-name="nowPlaying" type="text/x-handlebars">
+      {{#if displayQueue}}
+        <div id="queue">
+            <table class="show-queue album-listing">
+              {{#each nextSongs itemController="song"}}
+                {{partial songRow}}
+              {{/each}}
+            </table>
+        </div>
+      {{/if}}
+
         <footer class="now-playing">
         {{#if model}}
             <img class="now-playing-artwork" {{bindAttr src="album.artwork"}}>
@@ -67,19 +71,19 @@
               <div class="now-playing-player">
                 {{view App.AudioView srcBinding="url"}}
               </div>
-              {{#if queue.length}}
-                <div style="position:relative;">
-                    <table class="queue-overlay">
-                      {{#each queue}}
-                        {{partial songRow}}
-                      {{/each}}
-                    </table>
-                </div>
-              {{/if}}
             </div>
         {{else}}
           <span class="now-playing-empty">Select a song to start playing.</span>
         {{/if}}
+
+        {{#if nextSongs}}
+            <p class="queue">
+                {{nextSongs.length}}
+                <button class="next" {{action "next"}}>&gt;</button>
+            </p>
+        {{/if}}
+
+            <button class="queue" {{action "showQueue"}}>Show queue</button>
         </footer>
     </script>
 
@@ -104,11 +108,11 @@
     </script>
 
     <script data-template-name="_songRow" type="text/x-handlebars">
-          <tr {{bindAttr class="isSelected:selected"}}>
+          <tr {{bindAttr class="isSelected:is-playing"}}>
             <td class="song-track">
               <span class="track-number">{{track}}</span>
               <span class="play" {{action "play" this}}>▶</span>
-              <span class="play" {{action "enqueue" this}}>Q</span>
+              <button class="queue" {{action "enqueue" this}}>Queue</button>
             </td>
             <td class="song-name">{{name}}</td>
             <td class="song-duration">{{format-duration duration}}</td>

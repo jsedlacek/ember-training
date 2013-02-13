@@ -112,3 +112,101 @@ function createController(controllerName) {
   var container = App.buildContainer(App);
   return container.lookup('controller:' + controllerName);
 }
+
+function shouldBeView(selector) {
+  var id = $(selector).attr('id');
+  QUnit.push(Ember.View.views[id] instanceof Ember.View, null, null, "the element " + selector + " in DOM is backed by an Ember.View");
+  removeExpectedFromResult();
+}
+
+function shouldHaveTemplate(templateName) {
+  QUnit.push(Ember.TEMPLATES[templateName], null, null, "The template " + templateName + " should exist");
+  removeExpectedFromResult();
+}
+
+function testView(viewClass, message, callback) {
+  test(message, function() {
+    var view;
+    view = viewClass.create();
+    Ember._viewsInTest.push(view);
+    Ember.run(function() {
+      view.appendTo('#qunit-fixture');
+    });
+    callback(view);
+  });
+}
+
+function propertyShouldBecome(object, property, expectedValue) {
+  stop();
+
+  var actualValue;
+
+  function observer() {
+    var correctValue, message;
+
+    actualValue = object.get(property);
+
+    if (typeof expectedValue === 'function') {
+      if (expectedValue(actualValue)) {
+        correctValue = true;
+        message = "The " + property + " property on " + object + " fulfills the condition";
+      }
+    } else if (expectedValue === actualValue) {
+      correctValue = true;
+      message = "The " + property + " property on " + object + " became " + expectedValue;
+    }
+
+    if (correctValue) {
+      clearTimeout(timeout);
+      start();
+      Ember.removeObserver(object, property, observer);
+      QUnit.push(true, null, null, message);
+      removeExpectedFromResult();
+    }
+  }
+
+  var timeout = setTimeout(function() {
+    start();
+    if (typeof expectedValue === 'function') {
+      QUnit.push(false, null, null, "The " + property + " property of " + object + " never fulfilled the condition");
+      removeExpectedFromResult();
+    } else {
+      QUnit.push(actualValue === expectedValue, actualValue, expectedValue, "The " + property + " property of " + object + " never became " + expectedValue);
+    }
+  }, 3800);
+
+  Ember.addObserver(object, property, observer);
+}
+
+function waitFor(object, property, callback) {
+  stop();
+
+  function observer() {
+    if (object.get(property)) {
+      start();
+      clearTimeout(timeout);
+      Ember.removeObserver(object, property, observer);
+      Ember.run.next(callback);
+    }
+  }
+
+  Ember.addObserver(object, property, observer);
+
+  var timeout = setTimeout(function() {
+    start();
+    QUnit.push(false, null, null, "Timed out waiting for " + property + " of " + object + " to become truthy");
+    removeExpectedFromResult();
+  }, 3800);
+}
+
+function controllerFor(controller) {
+  return App.__container__.lookup('controller:' + controller);
+}
+
+function removeExpectedFromResult() {
+  // I cried the tears of my liiiiife
+  var assertions = QUnit.config.current.assertions,
+      lastAssertion = assertions[assertions.length - 1];
+
+  lastAssertion.message = lastAssertion.message.replace(/<tr class='test-expected'>.*?<\/tr>/, '');
+}

@@ -28,11 +28,31 @@
 
     <script data-template-name="audioControl" type="text/x-handlebars">
         <audio autoplay {{bindAttr src="view.src"}}></audio>
-        {{#unless view.isPlaying}}
-            <button class="play" {{action "play" target="view"}}>▶</button>
+
+        {{#if view.isPlaying}}
+            <button class="pause" {{action "pause" target="view"}}>❚❚</button>
         {{else}}
-            <button class="pause" {{action "pause" target="view"}}>[]</button>
-        {{/unless}}
+            <button class="play" {{action "play" target="view"}}>▶</button>
+        {{/if}}
+
+        <p class="duration">
+            <span {{action "toggleTime" target="view"}}>
+            {{#if view.displayRemaining}}
+                -{{format-duration view.remainingTime}}
+            {{else}}
+                {{format-duration view.currentTime}}
+            {{/if}}
+            </span>
+
+            <input type="range" {{bindAttr value="view.currentTime"}} {{bindAttr max="view.duration"}}></input>
+        </p>
+
+        {{#if queue.length}}
+        <p class="queue">
+            {{queue.length}}
+            <button class="next" {{action "next"}}>&gt;</button>
+        </p>
+        {{/if}}
     </script>
 
     <script data-template-name="nowPlaying" type="text/x-handlebars">
@@ -81,11 +101,12 @@
           <h2>{{unbound artist}}</h2>
         </div>
         <table class="album-listing">
-          {{#each songs}}
-              <tr>
+          {{#each songs itemController="song"}}
+              <tr {{bindAttr class="isSelected:selected"}}>
                 <td class="song-track">
                   <span class="track-number">{{track}}</span>
                   <span class="play" {{action "play" this}}>▶</span>
+                  <span class="play" {{action "enqueue" this}}>Q</span>
                 </td>
                 <td class="song-name">{{name}}</td>
                 <td class="song-duration">{{format-duration duration}}</td>

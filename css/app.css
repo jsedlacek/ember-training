@@ -106,6 +106,10 @@ header h1 {
   margin-top: 18px;
 }
 
+.album-listing tr.selected {
+    background: lightgreen;
+}
+
 .album-listing tr {
   border-top: 1px solid #e1e6e9;
   border-bottom: 1px solid #e1e6e9;
@@ -214,6 +218,13 @@ div.audio-control p.duration {
   width: 60px;
   color: #999;
   margin-left: 10px;
+}
+
+div.audio-control p.queue {
+  font-size: 11px;
+  width: 60px;
+  color: #999;
+  margin-left: 120px;
 }
 
 div.audio-control input[type=range] {

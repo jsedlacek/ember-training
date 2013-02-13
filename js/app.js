@@ -12,6 +12,13 @@ App.Router.map(function() {
     this.resource('album', { path: '/album/:id' });
 });
 
+App.ApplicationRoute = Em.Route.extend({
+    setupControllers: function() {
+        // ember itemController bug workaround
+        this.controllerFor('nowPlaying');
+    }
+});
+
 App.IndexRoute = Em.Route.extend({
     model: function() {
         return App.Album.find();
@@ -20,7 +27,8 @@ App.IndexRoute = Em.Route.extend({
 App.AlbumRoute = Em.Route.extend({
     events: {
         play: function(song) {
-            this.controllerFor('nowPlaying').set('model', song);
+            debugger;
+            this.controllerFor('nowPlaying').set('model', song.get('model'));
         }
     },
 
@@ -33,7 +41,32 @@ App.AlbumRoute = Em.Route.extend({
     }
 });
 
+App.SongController = Em.ObjectController.extend({
+    needs: ['nowPlaying'],
+
+    isSelected: function() {
+        return this.get('controllers.nowPlaying.model') === this.get('model');
+    }.property('controllers.nowPlaying.model', 'model'),
+
+    // bug? itemController actions do not bubble to the routes?
+    play: function(songController) {
+        // need to peel the itemController by song.get('model')
+        this.get('controllers.nowPlaying').set('model', songController.get('model'));
+    },
+    enqueue: function(songController) {
+        // need to peel the itemController by song.get('model')
+        this.get('controllers.nowPlaying.queue').pushObject(songController.get('model'));
+    }
+});
+
 App.NowPlayingController = Em.ObjectController.extend({
+    queue: null,
+    init: function() {
+        this.set('queue', []);
+    },
+    next: function() {
+        this.set('model', this.get('queue').popObject());
+    }
 });
 
 App.AudioView = Em.View.extend({
@@ -45,7 +78,15 @@ App.AudioView = Em.View.extend({
     duration: 0,
     isLoaded: false,
     isPlaying: false,
+    displayRemaining: false,
 
+    remainingTime: function() {
+        return this.get('duration')-this.get('currentTime');
+    }.property('duration', 'currentTime'),
+
+    toggleTime: function() {
+        this.set('displayRemaining', !this.get('displayRemaining'));
+    },
 
     play: function() {
         this.$('audio')[0].play();
@@ -58,7 +99,12 @@ App.AudioView = Em.View.extend({
 
     didInsertElement: function() {
         var view = this;
+        var $range = this.$('input[type="range"]');
         var $audio = this.$('audio');
+
+        $range.on('change', function() {
+            $audio[0].currentTime = this.value;
+        });
 
         $audio.on('durationchange', function(e) {
             view.set('duration', Math.floor(this.duration));
@@ -70,7 +116,6 @@ App.AudioView = Em.View.extend({
         });
         $audio.on('timeupdate', function(e) {
             view.set('currentTime', Math.floor(this.currentTime));
-            console.log('currentTime', view.get('currentTime'));
         });
         $audio.on('play', function(e) {
             view.set('isPlaying', true);
@@ -78,6 +123,11 @@ App.AudioView = Em.View.extend({
         });
         $audio.on('pause', function(e) {
             view.set('isPlaying', false);
+            console.log('playing', view.get('isPlaying'));
+        });
+        $audio.on('ended', function(e) {
+            view.get('controller').send('next');
+            //view.set('ended', true);
             console.log('playing', view.get('isPlaying'));
         });
     }

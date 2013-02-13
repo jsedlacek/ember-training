@@ -65,7 +65,7 @@ App.NowPlayingController = Em.ObjectController.extend({
         this.set('queue', []);
     },
     next: function() {
-        this.set('model', this.get('queue').popObject());
+        this.set('model', this.get('queue').shiftObject());
     }
 });
 

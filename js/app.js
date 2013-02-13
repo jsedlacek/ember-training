@@ -16,12 +16,16 @@ App.ApplicationRoute = Em.Route.extend({
     events: {
         // need to peel the itemController by song.get('model')
 
-        play: function(songController) {
-            this.controllerFor('nowPlaying').set('model', songController.get('model'));
+        pause: function() {
+            this.controllerFor('nowPlaying').set('isPlaying', false);
+        },
+        play: function(song) {
+            this.controllerFor('nowPlaying').set('model', song);
+            this.controllerFor('nowPlaying').set('isPlaying', true);
         },
 
-        enqueue: function(songController) {
-            this.controllerFor('nowPlaying').get('nextSongs').pushObject(songController.get('model'));
+        enqueue: function(song) {
+            this.controllerFor('nowPlaying').get('nextSongs').pushObject(song);
         }
     }
 });
@@ -48,12 +52,18 @@ App.SongController = Em.ObjectController.extend({
 
 App.NowPlayingController = Em.ObjectController.extend({
     displayQueue: false,
+    isPlaying: false,
     nextSongs: null,
 
     init: function() {
         this._super();
         this.set('nextSongs', []);
     },
+
+    _modelDidChange: function() {
+        // make sure we stop before changing the song
+        this.set('isPlaying', false);
+    }.observesBefore('model'),
 
     // action called upon playing ended event as well as on 'next' button click
     next: function() {
@@ -95,6 +105,14 @@ App.AudioView = Em.View.extend({
         this.$('audio')[0].pause();
         this.set('isPlaying', false);
     },
+
+    _isPlayingObserver: function() {
+        if (this.get('isPlaying')) {
+            this.play()
+        } else {
+            this.pause();
+        }
+    }.observes('isPlaying'),
 
     didInsertElement: function() {
         var view = this;

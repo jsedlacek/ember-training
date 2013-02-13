@@ -67,7 +67,15 @@
           <tr {{bindAttr class="isSelected:is-playing"}}>
             <td class="song-track">
               <span class="track-number">{{track}}</span>
-              <span class="play" {{action "play" controller}}>▶</span>
+              {{#if isSelected}}
+              {{#if controllers.nowPlaying.isPlaying}}
+              <span class="play" {{action "pause" this}}>❚❚</span>
+              {{else}}
+              <span class="play" {{action "play" this}}>▶</span>
+              {{/if}}
+              {{else}}
+              <span class="play" {{action "play" this}}>▶</span>
+              {{/if}}
             </td>
             <td class="song-name">{{name}}</td>
             <td class="song-duration">{{format-duration duration}}</td>
@@ -95,7 +103,7 @@
                 <span class="now-playing-artist">{{album.artist}}</span>
               </p>
               <div class="now-playing-player">
-                {{view App.AudioView srcBinding="url"}}
+                {{view App.AudioView srcBinding="url" isPlayingBinding="isPlaying"}}
               </div>
             </div>
         {{else}}

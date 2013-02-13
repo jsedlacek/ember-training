@@ -12,6 +12,20 @@ App.Router.map(function() {
     this.resource('album', { path: '/album/:album_id' });
 });
 
+App.ApplicationRoute = Em.Route.extend({
+    events: {
+        // need to peel the itemController by song.get('model')
+
+        play: function(songController) {
+            this.controllerFor('nowPlaying').set('model', songController.get('model'));
+        },
+
+        enqueue: function(songController) {
+            this.controllerFor('nowPlaying').get('nextSongs').pushObject(songController.get('model'));
+        }
+    }
+});
+
 App.IndexRoute = Em.Route.extend({
     model: function() {
         return App.Album.find();
@@ -19,18 +33,17 @@ App.IndexRoute = Em.Route.extend({
 });
 
 App.AlbumRoute = Em.Route.extend({
-    events: {
-        play: function(song) {
-            this.controllerFor('nowPlaying').set('model', song);
-        },
-        enqueue: function(song) {
-            this.controllerFor('nowPlaying').get('nextSongs').pushObject(song);
-        }
-    },
-
     model: function(params) {
         return App.Album.find(params.album_id);
     }
+});
+
+App.SongController = Em.ObjectController.extend({
+    needs: ['nowPlaying'],
+
+    isSelected: function() {
+        return this.get('controllers.nowPlaying.model') === this.get('model');
+    }.property('controllers.nowPlaying.model', 'model')
 });
 
 App.NowPlayingController = Em.ObjectController.extend({

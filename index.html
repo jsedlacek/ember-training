@@ -54,7 +54,7 @@
           <h2>{{unbound artist}}</h2>
         </div>
         <table class="album-listing">
-          {{#each songs}}
+          {{#each songs itemController="song"}}
             {{partial songRow}}
           {{/each}}
           <tr>
@@ -67,7 +67,7 @@
           <tr {{bindAttr class="isSelected:is-playing"}}>
             <td class="song-track">
               <span class="track-number">{{track}}</span>
-              <span class="play" {{action "play" this}}>▶</span>
+              <span class="play" {{action "play" controller}}>▶</span>
             </td>
             <td class="song-name">{{name}}</td>
             <td class="song-duration">{{format-duration duration}}</td>
@@ -79,7 +79,7 @@
       {{#if displayQueue}}
         <div id="queue">
             <table class="show-queue album-listing">
-              {{#each nextSongs}}
+              {{#each nextSongs itemController="song"}}
                 {{partial songRow}}
               {{/each}}
             </table>

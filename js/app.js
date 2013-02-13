@@ -13,9 +13,21 @@ App.Router.map(function() {
 });
 
 App.ApplicationRoute = Em.Route.extend({
-    setupControllers: function() {
+    setupController: function() {
         // ember itemController bug workaround
         this.controllerFor('nowPlaying');
+    },
+
+    events: {
+        play: function(songController) {
+            // need to peel the itemController by song.get('model')
+            this.controllerFor('nowPlaying').set('model', songController.get('model'));
+        },
+
+        enqueue: function(songController) {
+            // need to peel the itemController by song.get('model')
+            this.controllerFor('nowPlaying').get('nextSongs').pushObject(songController.get('model'));
+        }
     }
 });
 
@@ -25,17 +37,9 @@ App.IndexRoute = Em.Route.extend({
     }
 });
 App.AlbumRoute = Em.Route.extend({
-    events: {
-        play: function(song) {
-            debugger;
-            this.controllerFor('nowPlaying').set('model', song.get('model'));
-        }
-    },
-
     model: function(params) {
         return App.Album.find(params.id);
     },
-
     serialize: function(album) {
       return { id: album.get('id') };
     }
@@ -46,17 +50,7 @@ App.SongController = Em.ObjectController.extend({
 
     isSelected: function() {
         return this.get('controllers.nowPlaying.model') === this.get('model');
-    }.property('controllers.nowPlaying.model', 'model'),
-
-    // bug? itemController actions do not bubble to the routes?
-    play: function(songController) {
-        // need to peel the itemController by song.get('model')
-        this.get('controllers.nowPlaying').set('model', songController.get('model'));
-    },
-    enqueue: function(songController) {
-        // need to peel the itemController by song.get('model')
-        this.get('controllers.nowPlaying').get('nextSongs').pushObject(songController.get('model'));
-    }
+    }.property('controllers.nowPlaying.model', 'model')
 });
 
 App.NowPlayingController = Em.ObjectController.extend({
@@ -64,6 +58,7 @@ App.NowPlayingController = Em.ObjectController.extend({
     nextSongs: null,
 
     init: function() {
+        this._super();
         this.set('nextSongs', []);
     },
 

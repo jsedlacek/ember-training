@@ -120,10 +120,10 @@
               {{else}}
               <span class="play" {{action "play" this}}>▶</span>
               {{/if}}
-              <button class="queue" {{action "enqueue" this}}>Queue</button>
             </td>
             <td class="song-name">{{name}}</td>
             <td class="song-duration">{{format-duration duration}}</td>
+            <td class="song-queue"><button class="queue" {{action "enqueue" this}}>Queue</button></td>
           </tr>
     </script>
 

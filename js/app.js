@@ -22,6 +22,9 @@ App.AlbumRoute = Em.Route.extend({
     events: {
         play: function(song) {
             this.controllerFor('nowPlaying').set('model', song);
+        },
+        enqueue: function(song) {
+            this.controllerFor('nowPlaying').get('nextSongs').pushObject(song);
         }
     },
 
@@ -31,6 +34,23 @@ App.AlbumRoute = Em.Route.extend({
 });
 
 App.NowPlayingController = Em.ObjectController.extend({
+    displayQueue: false,
+    nextSongs: null,
+
+    init: function() {
+        this._super();
+        this.set('nextSongs', []);
+    },
+
+    // action called upon playing ended event as well as on 'next' button click
+    next: function() {
+        this.set('model', this.get('nextSongs').shiftObject());
+    },
+
+    // action called upon playing ended event as well as on 'next' button click
+    showQueue: function() {
+        this.set('displayQueue', !this.get('displayQueue'));
+    }
 });
 
 App.AudioView = Em.View.extend({
@@ -102,7 +122,7 @@ App.AlbumController = Em.ObjectController.extend({
     // can handle this on the controller... however this belongs to the route...
     Xneeds: ['nowPlaying'],
     Xplay: function(song) {
-        this.get('controllers.nowPlaying').set('song', song);
+        this.get('controllers.nowPlaying').set('model', song);
     },
 
     totalDuration: function() {

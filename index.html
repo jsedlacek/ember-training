@@ -55,14 +55,7 @@
         </div>
         <table class="album-listing">
           {{#each songs}}
-              <tr>
-                <td class="song-track">
-                  <span class="track-number">{{track}}</span>
-                  <span class="play" {{action "play" this}}>▶</span>
-                </td>
-                <td class="song-name">{{name}}</td>
-                <td class="song-duration">{{format-duration duration}}</td>
-              </tr>
+            {{partial songRow}}
           {{/each}}
           <tr>
             <td class="total-duration" colspan="3">Total Time: {{format-duration totalDuration}}</td>
@@ -70,7 +63,29 @@
         </table>
     </script>
 
+    <script data-template-name="_songRow" type="text/x-handlebars">
+          <tr {{bindAttr class="isSelected:is-playing"}}>
+            <td class="song-track">
+              <span class="track-number">{{track}}</span>
+              <span class="play" {{action "play" this}}>▶</span>
+            </td>
+            <td class="song-name">{{name}}</td>
+            <td class="song-duration">{{format-duration duration}}</td>
+            <td class="song-queue"><button class="queue" {{action "enqueue" this}}>Queue</button></td>
+          </tr>
+    </script>
+
     <script data-template-name="nowPlaying" type="text/x-handlebars">
+      {{#if displayQueue}}
+        <div id="queue">
+            <table class="show-queue album-listing">
+              {{#each nextSongs}}
+                {{partial songRow}}
+              {{/each}}
+            </table>
+        </div>
+      {{/if}}
+
         <footer class="now-playing">
         {{#if model}}
             <img class="now-playing-artwork" {{bindAttr src="album.artwork"}}>
@@ -86,11 +101,21 @@
         {{else}}
           <span class="now-playing-empty">Select a song to start playing.</span>
         {{/if}}
+
+        {{#if nextSongs}}
+            <p class="queue">
+                {{nextSongs.length}}
+                <button class="next" {{action "next"}}>&gt;</button>
+            </p>
+        {{/if}}
+
+            <button class="queue" {{action "showQueue"}}>Show queue</button>
         </footer>
     </script>
 
     <script data-template-name="audioControl" type="text/x-handlebars">
         <audio autoplay {{bindAttr src="view.src"}}></audio>
+
         {{#if view.isPlaying}}
             <button class="pause" {{action "pause" target="view"}}>❚❚</button>
         {{else}}

@@ -44,6 +44,16 @@ App.AudioView = Em.View.extend({
     isPlaying: false,
 
 
+    displayRemaining: false,
+
+    remainingTime: function() {
+        return this.get('duration')-this.get('currentTime');
+    }.property('duration', 'currentTime'),
+
+    toggleTime: function() {
+        this.set('displayRemaining', !this.get('displayRemaining'));
+    },
+
     play: function() {
         this.$('audio')[0].play();
         this.set('isPlaying', true);

@@ -98,7 +98,13 @@
         {{/if}}
 
         <p class="duration">
+            <span {{action "toggleTime" target="view"}}>
+            {{#if view.displayRemaining}}
+                -{{format-duration view.remainingTime}}
+            {{else}}
                 {{format-duration view.currentTime}}
+            {{/if}}
+            </span>
 
             <input type="range" {{bindAttr value="view.currentTime"}} {{bindAttr max="view.duration"}}></input>
         </p>

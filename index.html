@@ -26,27 +26,60 @@
         {{render "nowPlaying"}}
     </script>
 
-    <script data-template-name="audioControl" type="text/x-handlebars">
-        <audio autoplay {{bindAttr src="view.src"}}></audio>
+    <script data-template-name="index" type="text/x-handlebars">
+        <div class="album-list">
+          {{#each album in controller}}
+              <div class="album">
+                {{#linkTo "album" album}}
+                    <img {{bindAttr src="album.artwork"}}>
+                {{/linkTo}}
+                <p class="album-name">{{album.name}}</p>
+                <p class="album-artist">{{album.artist}}</p>
+                <p class="song-count">
+                  {{album.songs.length}} songs
+                  {{#if album.isExplicit}}
+                      <span class="explicit">EXPLICIT</span>
+                  {{/if}}
+                </p>
+              </div>
+          {{/each}}
+        </div>
+    </script>
 
-        {{#if view.isPlaying}}
-            <button class="pause" {{action "pause" target="view"}}>❚❚</button>
-        {{else}}
-            <button class="play" {{action "play" target="view"}}>▶</button>
-        {{/if}}
+    <script data-template-name="album" type="text/x-handlebars">
+        <div class="album-info">
+          <img {{bindAttr src="artwork"}}">
+          <h1>{{unbound name}}</h1>
+          <h2>{{unbound artist}}</h2>
+        </div>
+        <table class="album-listing">
+          {{#each songs itemController="song"}}
+            {{partial songRow}}
+          {{/each}}
+          <tr>
+            <td class="total-duration" colspan="3">Total Time: {{format-duration totalDuration}}</td>
+          </tr>
+        </table>
+    </script>
 
-        <p class="duration">
-            <span {{action "toggleTime" target="view"}}>
-            {{#if view.displayRemaining}}
-                -{{format-duration view.remainingTime}}
-            {{else}}
-                {{format-duration view.currentTime}}
-            {{/if}}
-            </span>
-
-            <input type="range" {{bindAttr value="view.currentTime"}} {{bindAttr max="view.duration"}}></input>
-        </p>
-
+    <script data-template-name="_songRow" type="text/x-handlebars">
+          <tr {{bindAttr class="isSelected:is-playing"}}>
+            <td class="song-track">
+              <span class="track-number">{{track}}</span>
+              {{#if isSelected}}
+              {{#if controllers.nowPlaying.isPlaying}}
+              <span class="play" {{action "pause" controller}}>❚❚</span>
+              {{else}}
+              <span class="play" {{action "play" controller}}>▶</span>
+              {{/if}}
+              {{else}}
+              <span class="play" {{action "play" controller}}>▶</span>
+              {{/if}}
+            </td>
+            <td class="song-name">{{name}}</td>
+            <td class="song-duration">{{format-duration duration}}</td>
+            <td class="song-queue"><button class="queue" {{action "enqueue" controller}}>Queue</button></td>
+          </tr>
     </script>
 
     <script data-template-name="nowPlaying" type="text/x-handlebars">
@@ -87,60 +120,26 @@
         </footer>
     </script>
 
-    <script data-template-name="index" type="text/x-handlebars">
-        <div class="album-list">
-          {{#each album in controller}}
-              <div class="album">
-                {{#linkTo "album" album}}
-                    <img {{bindAttr src="album.artwork"}}>
-                {{/linkTo}}
-                <p class="album-name">{{album.name}}</p>
-                <p class="album-artist">{{album.artist}}</p>
-                <p class="song-count">
-                  {{album.songs.length}} songs
-                  {{#if album.isExplicit}}
-                      <span class="explicit">EXPLICIT</span>
-                  {{/if}}
-                </p>
-              </div>
-          {{/each}}
-        </div>
-    </script>
+    <script data-template-name="audioControl" type="text/x-handlebars">
+        <audio autoplay {{bindAttr src="view.src"}}></audio>
 
-    <script data-template-name="_songRow" type="text/x-handlebars">
-          <tr {{bindAttr class="isSelected:is-playing"}}>
-            <td class="song-track">
-              <span class="track-number">{{track}}</span>
-              {{#if isSelected}}
-              {{#if controllers.nowPlaying.isPlaying}}
-              <span class="play" {{action "pause" controller}}>❚❚</span>
-              {{else}}
-              <span class="play" {{action "play" controller}}>▶</span>
-              {{/if}}
-              {{else}}
-              <span class="play" {{action "play" controller}}>▶</span>
-              {{/if}}
-            </td>
-            <td class="song-name">{{name}}</td>
-            <td class="song-duration">{{format-duration duration}}</td>
-            <td class="song-queue"><button class="queue" {{action "enqueue" controller}}>Queue</button></td>
-          </tr>
-    </script>
+        {{#if view.isPlaying}}
+            <button class="pause" {{action "pause" target="view"}}>❚❚</button>
+        {{else}}
+            <button class="play" {{action "play" target="view"}}>▶</button>
+        {{/if}}
 
-    <script data-template-name="album" type="text/x-handlebars">
-        <div class="album-info">
-          <img {{bindAttr src="artwork"}}">
-          <h1>{{unbound name}}</h1>
-          <h2>{{unbound artist}}</h2>
-        </div>
-        <table class="album-listing">
-          {{#each songs itemController="song"}}
-            {{partial songRow}}
-          {{/each}}
-          <tr>
-            <td class="total-duration" colspan="3">Total Time: {{format-duration totalDuration}}</td>
-          </tr>
-        </table>
+        <p class="duration">
+            <span {{action "toggleTime" target="view"}}>
+            {{#if view.displayRemaining}}
+                -{{format-duration view.remainingTime}}
+            {{else}}
+                {{format-duration view.currentTime}}
+            {{/if}}
+            </span>
+
+            <input type="range" {{bindAttr value="view.currentTime"}} {{bindAttr max="view.duration"}}></input>
+        </p>
     </script>
 
     <div id="qunit" style="display: none"></div>

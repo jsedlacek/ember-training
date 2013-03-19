@@ -23,11 +23,13 @@
         </header>
 
         {{outlet}}
+
+        {{render "nowPlaying"}}
     </script>
 
     <script data-template-name="index" type="text/x-handlebars">
         <div class="album-list">
-          {{#each album in this}}
+          {{#each album in controller}}
               <div class="album">
                 {{#linkTo "album" album}}
                     <img {{bindAttr src="album.artwork"}}>
@@ -56,6 +58,7 @@
               <tr>
                 <td class="song-track">
                   <span class="track-number">{{track}}</span>
+                  <span class="play" {{action "play" this}}>▶</span>
                 </td>
                 <td class="song-name">{{name}}</td>
                 <td class="song-duration">{{format-duration duration}}</td>
@@ -65,6 +68,25 @@
             <td class="total-duration" colspan="3">Total Time: {{format-duration totalDuration}}</td>
           </tr>
         </table>
+    </script>
+
+    <script data-template-name="nowPlaying" type="text/x-handlebars">
+        <footer class="now-playing">
+        {{#if model}}
+            <img class="now-playing-artwork" {{bindAttr src="album.artwork"}}>
+            <div class="now-playing-body">
+              <p class="now-playing-details">
+                <span class="now-playing-name">{{name}}</span> -
+                <span class="now-playing-artist">{{album.artist}}</span>
+              </p>
+              <div class="now-playing-player">
+                <!-- You will fill this in later -->
+              </div>
+            </div>
+        {{else}}
+          <span class="now-playing-empty">Select a song to start playing.</span>
+        {{/if}}
+        </footer>
     </script>
 
     <div id="qunit" style="display: none"></div>

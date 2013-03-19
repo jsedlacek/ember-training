@@ -30,6 +30,64 @@ App.AlbumRoute = Em.Route.extend({
     }
 });
 
+App.NowPlayingController = Em.ObjectController.extend({
+});
+
+App.AudioView = Em.View.extend({
+    templateName: 'audioControl',
+    classNames: ['audio-control'],
+
+    // mirroring the audio tag properties
+    currentTime: 0,
+    duration: 0,
+    isLoaded: false,
+    isPlaying: false,
+
+
+    play: function() {
+        this.$('audio')[0].play();
+        this.set('isPlaying', true);
+    },
+    pause: function() {
+        this.$('audio')[0].pause();
+        this.set('isPlaying', false);
+    },
+
+    didInsertElement: function() {
+        var view = this;
+        var $range = this.$('input[type="range"]');
+        var $audio = this.$('audio');
+
+        $range.on('change', function() {
+            $audio[0].currentTime = this.value;
+        });
+
+        $audio.on('durationchange', function(e) {
+            view.set('duration', Math.floor(this.duration));
+            console.log('duration', view.get('duration'));
+        });
+        $audio.on('loadedmetadata', function(e) {
+            view.set('isLoaded', true);
+            console.log('loaded', view.get('isLoaded'));
+        });
+        $audio.on('timeupdate', function(e) {
+            view.set('currentTime', Math.floor(this.currentTime));
+        });
+        $audio.on('play', function(e) {
+            view.set('isPlaying', true);
+            console.log('playing', view.get('isPlaying'));
+        });
+        $audio.on('ended', function(e) {
+            view.get('controller').send('next'); // next song action
+            console.log('playing', view.get('isPlaying'));
+        });
+        $audio.on('pause', function(e) {
+            view.set('isPlaying', false);
+            console.log('playing', view.get('isPlaying'));
+        });
+    }
+});
+
 App.AlbumController = Em.ObjectController.extend({
     // can handle this on the controller... however this belongs to the route...
     Xneeds: ['nowPlaying'],
@@ -42,9 +100,6 @@ App.AlbumController = Em.ObjectController.extend({
             return s += t;
         }, 0);
     }.property('songs.@each.duration')
-});
-
-App.NowPlayingController = Em.ObjectController.extend({
 });
 
 Ember.Handlebars.registerBoundHelper('format-duration', function(value, options) {

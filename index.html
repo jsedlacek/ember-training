@@ -6,7 +6,7 @@
     <title>BümBöx</title>
     <link rel="stylesheet" href="css/app.css">
 
-    <script src="js/libs/handlebars-1.0.rc.2.js"></script>
+    <script src="js/libs/handlebars-1.0.0-rc.3.js"></script>
     <script src="js/libs/jquery-1.8.3.js"></script>
     <script src="js/libs/ember.js"></script>
     <script src="js/libs/ember-data.js"></script>
@@ -113,17 +113,17 @@
               <span class="track-number">{{track}}</span>
               {{#if isSelected}}
               {{#if controllers.nowPlaying.isPlaying}}
-              <span class="play" {{action "pause" this}}>❚❚</span>
+              <span class="play" {{action "pause" controller}}>❚❚</span>
               {{else}}
-              <span class="play" {{action "play" this}}>▶</span>
+              <span class="play" {{action "play" controller}}>▶</span>
               {{/if}}
               {{else}}
-              <span class="play" {{action "play" this}}>▶</span>
+              <span class="play" {{action "play" controller}}>▶</span>
               {{/if}}
             </td>
             <td class="song-name">{{name}}</td>
             <td class="song-duration">{{format-duration duration}}</td>
-            <td class="song-queue"><button class="queue" {{action "enqueue" this}}>Queue</button></td>
+            <td class="song-queue"><button class="queue" {{action "enqueue" controller}}>Queue</button></td>
           </tr>
     </script>
 

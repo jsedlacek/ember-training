@@ -4,7 +4,7 @@
 window.App = Em.Application.create();
 
 App.Store = DS.Store.extend({
-    revision: 11,
+    revision: 12,
     adapter: 'DS.FixtureAdapter'
 });
 
@@ -13,11 +13,6 @@ App.Router.map(function() {
 });
 
 App.ApplicationRoute = Em.Route.extend({
-    setupController: function() {
-        // ember itemController bug workaround
-        this.controllerFor('nowPlaying');
-    },
-
     events: {
         pause: function(songController) {
             this.controllerFor('nowPlaying').set('isPlaying', false);
@@ -159,6 +154,7 @@ App.AlbumController = Em.ObjectController.extend({
     // can handle this on the controller... however this belongs to the route...
     Xneeds: ['nowPlaying'],
     Xplay: function(song) {
+        console.log('play song', song);
         this.get('controllers.nowPlaying').set('song', song);
     },
 

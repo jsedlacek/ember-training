@@ -221,6 +221,10 @@ div.audio-control p.duration {
   margin-left: 10px;
 }
 
+div.audio-control span.time {
+    cursor: default;
+}
+
 div.audio-control input[type=range] {
   -webkit-flex-grow: 1;
   position: relative;
